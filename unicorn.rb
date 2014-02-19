@@ -8,20 +8,9 @@
 # See http://unicorn.bogomips.org/Unicorn/Configurator.html for complete
 # documentation.
 
-# Uncomment and customize the last line to run in a non-root path
-# WARNING: We recommend creating a FQDN to host GitLab in a root path instead of this.
-# Note that four settings need to be changed for this to work.
-# 1) In your application.rb file: config.relative_url_root = "/gitlab"
-# 2) In your gitlab.yml file: relative_url_root: /gitlab
-# 3) In your unicorn.rb: ENV['RAILS_RELATIVE_URL_ROOT'] = "/gitlab"
-# 4) In ../gitlab-shell/config.yml: gitlab_url: "http://127.0.0.1/gitlab"
-# To update the path, run: sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
-#
-ENV['RAILS_RELATIVE_URL_ROOT'] = "/gitlab"
-
 # Use at least one worker per core if you're on a dedicated server,
 # more will usually help for _short_ waits on databases/caches.
-worker_processes 2
+worker_processes 1
 
 # Since Unicorn is never exposed to outside clients, it does not need to
 # run on the standard HTTP port (80), there is no reason to start Unicorn
@@ -32,24 +21,24 @@ worker_processes 2
 
 # Help ensure your application will always spawn in the symlinked
 # "current" directory that Capistrano sets up.
-working_directory "/home/david/sites/gitlab" # available in 0.94.0+
+working_directory "/home/lims/apps/redmine" # available in 0.94.0+
 
 # listen on both a Unix domain socket and a TCP port,
 # we use a shorter backlog for quicker failover when busy
-listen "/home/david/shared/socket/gitlab/gitlab.socket", :backlog => 64
-listen 8181, :tcp_nopush => true
+listen "/home/lims/shared/socket/redmine/unicorn.sock", :backlog => 64
+listen 8080, :tcp_nopush => true
 
 # nuke workers after 30 seconds instead of 60 seconds (the default)
 timeout 30
 
 # feel free to point this anywhere accessible on the filesystem
-pid "/home/david/shared/pid/gitlab/unicorn.pid"
+pid "/home/lims/shared/pid/redmine/unicorn.pid"
 
 # By default, the Unicorn logger will write to stderr.
-# Additionally, some applications/frameworks log to stderr or stdout,
+# Additionally, ome applications/frameworks log to stderr or stdout,
 # so prevent them from going to /dev/null when daemonized here:
-stderr_path "/home/david/shared/log/gitlab/unicorn.stderr.log"
-stdout_path "/home/david/shared/log/gitlab/unicorn.stdout.log"
+stderr_path "/home/lims/shared/log/redmine/unicorn.stderr.log"
+stdout_path "/home/lims/shared/log/redmine/unicorn.stdout.log"
 
 # combine Ruby 2.0.0dev or REE with "preload_app true" for memory savings
 # http://rubyenterpriseedition.com/faq.html#adapt_apps_for_cow
@@ -75,19 +64,19 @@ before_fork do |server, worker|
   # installations.  It is not needed if your system can house
   # twice as many worker_processes as you have configured.
   #
-  # This allows a new master process to incrementally
-  # phase out the old master process with SIGTTOU to avoid a
-  # thundering herd (especially in the "preload_app false" case)
-  # when doing a transparent upgrade.  The last worker spawned
-  # will then kill off the old master process with a SIGQUIT.
-  old_pid = "#{server.config[:pid]}.oldbin"
-  if old_pid != server.pid
-    begin
-      sig = (worker.nr + 1) >= server.worker_processes ? :QUIT : :TTOU
-      Process.kill(sig, File.read(old_pid).to_i)
-    rescue Errno::ENOENT, Errno::ESRCH
-    end
-  end
+  # # This allows a new master process to incrementally
+  # # phase out the old master process with SIGTTOU to avoid a
+  # # thundering herd (especially in the "preload_app false" case)
+  # # when doing a transparent upgrade.  The last worker spawned
+  # # will then kill off the old master process with a SIGQUIT.
+  # old_pid = "#{server.config[:pid]}.oldbin"
+  # if old_pid != server.pid
+  #   begin
+  #     sig = (worker.nr + 1) >= server.worker_processes ? :QUIT : :TTOU
+  #     Process.kill(sig, File.read(old_pid).to_i)
+  #   rescue Errno::ENOENT, Errno::ESRCH
+  #   end
+  # end
   #
   # Throttle the master from forking too quickly by sleeping.  Due
   # to the implementation of standard Unix signal handlers, this
