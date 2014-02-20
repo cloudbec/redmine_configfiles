@@ -1,0 +1,27 @@
+# Copy this to /etc/default/redmine in order for it to apply to your system.
+
+# RAILS_ENV defines the type of installation that is running.
+# Normal values are "production", "test" and "development".
+RAILS_ENV="production"
+
+# app_user defines the user that GitLab is run as.
+# The default is "git".
+app_user="david"
+
+# app_root defines the folder in which redmine and it's components are installed.
+# The default is "/home/$app_user/redmine"
+app_root="/home/$app_user/sites/redmine"
+
+# pid_path defines a folder in which the redmine and it's components place their pids.
+# This variable is also used below to define the relevant pids for the redmine components.
+# The default is "$app_root/tmp/pids"
+pid_path="/home/david/shared/pid/redmine/"
+
+# socket_path defines the folder in which redmine places the sockets
+#The default is "$app_root/tmp/sockets"
+socket_path="/home/david/shared/socket/redmine"
+
+# web_server_pid_path defines the path in which to create the pid file fo the web_server
+# The default is "$pid_path/unicorn.pid"
+web_server_pid_path="/home/david/shared/pid/redmine/unicorn.pid"
+
