@@ -1,0 +1,2 @@
+#bin/bash
+cd /home/david/sites/redmine && unicorn_rails -c /home/david/shared/config/redmine/unicorn.rb -p 5000 -E production -D
